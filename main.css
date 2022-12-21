@@ -35,7 +35,7 @@
     height: 2rem;
     color: white;
     text-align: right;
-    padding: 1rem;
+    padding: .2rem .5rem;
 }
 #output{
     background-color:rgb(226, 219, 219);
