@@ -1,138 +1,72 @@
 // main APP
 let display=document.getElementById("display");
 let output=document.getElementById("output");
+
+// thank you MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
+function calculate(str) {
+    return eval?.(`"use strict";(${str})`);
+  }
+
+  
 class App extends React.Component{
     constructor(props){
         super(props);
-        this.state={firstNum: 0, operator: "", lastNum: "", result: "", display: 0}
+        this.state={display: 0}
         this.handleClear=this.handleClear.bind(this)
         this.handleOperator=this.handleOperator.bind(this)
         this.handleNumber=this.handleNumber.bind(this)
+        this.handleDecimal=this.handleDecimal.bind(this)
+
 
     }
     // WORKS! :)
     handleClear(){
-        this.setState({firstNum: 0, lastNum: "", result: "", operator: "", display: 0})
+        this.setState({display: 0})
     }
     // Need to update to make sure it holds many operations at once before hitting equals (Test 9)
     handleNumber=(e)=>{
-        if(this.state.firstNum == 0){
+        const number = e.target.innerText;
+        if(this.state.display == 0){
             this.setState({
-                firstNum: e.target.innerText,
-                display: e.target.innerText,
+                display: number
             },()=>{
-                console.log(this.state.firstNum)
-                // do i have to put anything here?
-            });
-        }
-        // =============================== why isn't this working? ===============================
-        // else if(this.state.firstNum == 0.0){
-        //     this.setState({
-        //         firstNum: this.state.firstNum + e.target.innerText,
-        //         display: this.state.firstNum + e.target.innerText,
-        //     },()=>{
-        //         console.log(this.state.firstNum)
-
-        //     });
-        // }
-        else if(this.state.operator == ""){
-            this.setState({
-                firstNum: this.state.firstNum + e.target.innerText,
-                display: this.state.display + e.target.innerText
-            },()=>{
-                // do i have to put anything here?
+                console.log(this.state.display)
             });
         }
         else{
             this.setState({
-                lastNum: this.state.lastNum + e.target.innerText,
-                display: this.state.display + e.target.innerText
+                display: this.state.display + number
             },()=>{
-                // do i have to put anything here?
-            });
+                console.log(this.state.display)
+            })
         }
     }
     // Maaaay have to change this condition?
     handleOperator=(e)=>{
-        if(this.state.firstNum != 0){
+        const operator = e.target.innerText;
+        if(this.state.display != 0){
             this.setState({
-                operator: e.target.innerText,
-                display: e.target.innerText
+                display: this.state.display + " " + operator + " "
             },()=>{
             });
         }
     }
     // EQUALS WORKING! :)
     handleEquals=()=>{
-        if(this.state.operator == "-"){
-            this.setState({
-                result: Number(this.state.firstNum - this.state.lastNum),
-                display: Number(this.state.firstNum - this.state.lastNum),
-                firstNum: Number(this.state.firstNum - this.state.lastNum),
-                lastNum: "",
-                operator: ""
-            },()=>{
-            });
-        }
-        else if(this.state.operator == "+"){
-            this.setState({
-                result: Number(this.state.firstNum) + Number(this.state.lastNum),
-                display: Number(this.state.firstNum) + Number(this.state.lastNum),
-                firstNum: Number(this.state.firstNum) + Number(this.state.lastNum),
-                lastNum: "",
-                operator: ""
-            },()=>{
-            });
-        }
-        else if(this.state.operator == "*"){
-            this.setState({
-                result: Number(this.state.firstNum * this.state.lastNum),
-                display: Number(this.state.firstNum * this.state.lastNum),
-                firstNum: Number(this.state.firstNum * this.state.lastNum),
-                lastNum: "",
-                operator: ""
-            },()=>{
-                
-            });
-        }
-        else if(this.state.operator == "/"){
-            this.setState({
-                result: Number(this.state.firstNum / this.state.lastNum),
-                display: Number(this.state.firstNum / this.state.lastNum),
-                firstNum: Number(this.state.firstNum / this.state.lastNum),
-                lastNum: "",
-                operator: ""
-            },()=>{
-                
-            });
-        }
+        const result = calculate(this.state.display)
+        this.setState({
+            display: result
+        },()=>{
+            console.log(this.state.display)
+        });
     }
 
     handleDecimal=(e)=>{
-        if(this.state.lastNum != "" && this.state.lastNum.indexOf('.') !== 1){
+        const decimal = e.target.innerText;
+        console.log(this.state.display)
+        if(this.state.display.indexOf('.') !== 1){
             this.setState({
-                lastNum: this.state.lastNum + e.target.innerText,
-                display: this.state.lastNum + e.target.innerText
-            })
-        }
-        else if(this.state.firstNum != 0 && this.state.operator != "" && this.state.lastNum ==""){
-            this.setState({
-                lastNum: 0+e.target.innerText,
-                display: 0+e.target.innerText
-            })
-        }
-        else if(this.state.firstNum == 0){
-            this.setState({
-                firstNum: this.state.firstNum + e.target.innerText,
-                display: this.state.firstNum + e.target.innerText,
-            },()=>{
-                console.log(this.state.firstNum)
-            })
-        }
-        else if(this.state.firstNum != 0 && this.state.firstNum.indexOf('.') !==1){
-            this.setState({
-                firstNum: this.state.firstNum + e.target.innerText,
-                display: this.state.firstNum + e.target.innerText
+                display: this.state.display + decimal
             })
         }
     }
@@ -143,7 +77,6 @@ class App extends React.Component{
             <>
                 <div id="calculator">
                     <div className="display" id="display">{this.state.display}</div>
-                    {/* <div className="display" id="output">{this.state.result}</div> */}
                     <div id="operators">
                         <button onClick={this.handleClear} id="clear" value="AC">AC</button>
                         <button onClick={this.handleOperator} id="divide" value="/">/</button>
