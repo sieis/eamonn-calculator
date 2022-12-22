@@ -1,6 +1,6 @@
 // main APP
 let display=document.getElementById("display");
-let output=document.getElementById("output");
+let output=document.getElementById("expression");
 
 // thank you MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
 function calculate(str) {
@@ -11,7 +11,7 @@ function calculate(str) {
 class App extends React.Component{
     constructor(props){
         super(props);
-        this.state={display: 0}
+        this.state={display: 0, expression: ""}
         this.handleClear=this.handleClear.bind(this)
         this.handleOperator=this.handleOperator.bind(this)
         this.handleNumber=this.handleNumber.bind(this)
@@ -21,52 +21,52 @@ class App extends React.Component{
     }
     // WORKS! :)
     handleClear(){
-        this.setState({display: 0})
+        this.setState({display: 0,expression: ""})
     }
-    // Need to update to make sure it holds many operations at once before hitting equals (Test 9)
     handleNumber=(e)=>{
         const number = e.target.innerText;
-        if(this.state.display == 0){
+
+        if(this.state.display == 0 || this.state.expression == "="){
             this.setState({
-                display: number
-            },()=>{
-                console.log(this.state.display)
+                display: number,
+                expression: number
             });
         }
         else{
             this.setState({
-                display: this.state.display + number
-            },()=>{
-                console.log(this.state.display)
+                display: this.state.display + number,
+                expression: this.state.display + number
             })
         }
     }
     // Maaaay have to change this condition?
     handleOperator=(e)=>{
         const operator = e.target.innerText;
+
         if(this.state.display != 0){
             this.setState({
-                display: this.state.display + " " + operator + " "
-            },()=>{
+                display: this.state.display + " " + operator + " ",
+                expression: this.state.display + " " + operator + " "
             });
         }
     }
-    // EQUALS WORKING! :)
     handleEquals=()=>{
         const result = calculate(this.state.display)
         this.setState({
-            display: result
-        },()=>{
-            console.log(this.state.display)
+            display: result,
+            expression: "="
         });
     }
 
     handleDecimal=(e)=>{
         const decimal = e.target.innerText;
-        console.log(this.state.display)
-        if(this.state.display.indexOf('.') !== 1){
+        const array = this.state.display.split(' ')
+        const lastValue = array.at(-1)
+        
+        if(!lastValue.includes(".") && typeof(Number(lastValue)) === "number"){
             this.setState({
-                display: this.state.display + decimal
+                display: this.state.display + decimal,
+                expression: this.state.display + decimal
             })
         }
     }
@@ -76,6 +76,7 @@ class App extends React.Component{
         return(
             <>
                 <div id="calculator">
+                    <div className="display" id="expression">{this.state.expression}</div>
                     <div className="display" id="display">{this.state.display}</div>
                     <div id="operators">
                         <button onClick={this.handleClear} id="clear" value="AC">AC</button>
