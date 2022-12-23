@@ -39,33 +39,54 @@ class App extends React.Component{
             })
         }
     }
+
+    // super sloppy and overwritten, but the handleOperator finally works!!!
     handleOperator=(e)=>{
         const operator = e.target.innerText;
-
-        if(this.state.display.length > 1){
-            // this will be the operator plus the space right after it at the end
-            const checkoperator = this.state.display.slice(-2)
-            const newoperator = e.target.innerText+" "
-            console.log(newoperator)
-
-            if(checkoperator === "+ " || checkoperator === "/ " || checkoperator === "* " ||checkoperator === "- "){
-                    // ++++++=======Here's where you need to finish; replace the display and expressions' last thing with current operator++++++=======
-                    // still have 15/16 tests passing but can't figure out how to handle the double operators issue
-                    console.log("stuff should be triggering",newoperator)
-                    this.setState({
-                        display: this.state.display + "eee"
-                    },()=>{
-                        console.log(this.state.display)
-                    })
-            }
-        }
-
+        // as long as not at the very start, add the operator to the display
         if(this.state.display != 0){
             this.setState({
                 display: this.state.display + " " + operator + " ",
                 expression: this.state.display + " " + operator + " "
             });
         }
+        // if there's stuff in the display already, we gotta run some tests...
+        if(this.state.display.length > 1){
+            // this will be the operator plus the space right after it at the end
+            const checkoperator = this.state.display.slice(-2)
+            // it's possible to have two operators (when we allow the minus sign to remain in the display) This will test for an operator before it if a third operator is entered
+            const checkoperator2 = this.state.display.slice(-4,-2)
+            const newoperator = e.target.innerText+" "
+
+            // if minus sign entered, it's ok to add it to display
+            if(newoperator === "- " && (checkoperator === "+ " || checkoperator === "/ " || checkoperator === "* " ||checkoperator === "- ")){
+                        this.setState({
+                            display: this.state.display + newoperator,
+                            expression: this.state.display + newoperator
+                        },()=>{
+                        })
+                }
+            // if other operator is entered
+            else if(checkoperator === "+ " || checkoperator === "/ " || checkoperator === "* " ||checkoperator === "- "){
+                    // check to see if there's an operator behind it (only time this will happen is if there was an operator and then the minus sign and now we're entering a third operator) in that case, remove the last two operators and replace it with the current one.
+                    if(checkoperator2 === "+ " || checkoperator2 === "/ " || checkoperator2 === "* " ||checkoperator2 === "- "){
+                        this.setState({
+                            display: this.state.display.slice(0,-4) + newoperator,
+                            expression: this.state.display.slice(0,-4) + newoperator
+                        })
+                    }
+                    // set the displays so they remove the last operator and replace with the current one.
+                    else{
+                        this.setState({
+                            display: this.state.display.slice(0,-2) + newoperator,
+                            expression: this.state.display.slice(0,-2) + newoperator
+                        },()=>{
+                        })
+                    }
+            }
+        }
+
+        
     }
     handleEquals=()=>{
         const result = calculate(this.state.display)
