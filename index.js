@@ -39,9 +39,26 @@ class App extends React.Component{
             })
         }
     }
-    // Maaaay have to change this condition?
     handleOperator=(e)=>{
         const operator = e.target.innerText;
+
+        if(this.state.display.length > 1){
+            // this will be the operator plus the space right after it at the end
+            const checkoperator = this.state.display.slice(-2)
+            const newoperator = e.target.innerText+" "
+            console.log(newoperator)
+
+            if(checkoperator === "+ " || checkoperator === "/ " || checkoperator === "* " ||checkoperator === "- "){
+                    // ++++++=======Here's where you need to finish; replace the display and expressions' last thing with current operator++++++=======
+                    // still have 15/16 tests passing but can't figure out how to handle the double operators issue
+                    console.log("stuff should be triggering",newoperator)
+                    this.setState({
+                        display: this.state.display + "eee"
+                    },()=>{
+                        console.log(this.state.display)
+                    })
+            }
+        }
 
         if(this.state.display != 0){
             this.setState({
