@@ -24,6 +24,7 @@ h1{
 .container{
     padding: 200px 0;
     max-width: 500px;
+    margin: 0 auto;
 }
 #root{
     margin-bottom: 2rem;
